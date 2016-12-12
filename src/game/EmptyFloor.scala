@@ -1,17 +1,17 @@
 package game
 
-class Wall extends Spot {
+class EmptyFloor extends Spot {
   
-   private val pUnPassable = true
+   private val pUnPassable = false
    
    def unPassable:Boolean = this.pUnPassable
   
-   def color = "BLACK"
+   def color = "CYAN"
    
    def hasItem = false
    
    def itemType = "None"
-   
+     
    def removeItem = None
    
    def hasPlayer = false

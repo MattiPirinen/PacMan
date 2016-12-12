@@ -36,7 +36,14 @@ object View extends SimpleSwingApplication {
               }
               if (world.worldGrid(i)(k).hasItem) {
                 g.setColor(Color.BLUE)
+                if (world.worldGrid(i)(k).itemType == "pointItem")  {
                 g.fillOval(i * cellSize+cellSize/3, k * cellSize+cellSize/3, cellSize/3, cellSize/3)
+                }
+                else if (world.worldGrid(i)(k).itemType == "powerPellet") {
+                g.setColor(Color.WHITE)  
+                g.fillOval(i * cellSize+cellSize/4, k * cellSize+cellSize/4, cellSize/2, cellSize/2) 
+                }
+                
               }
             }
           }
@@ -103,10 +110,15 @@ object View extends SimpleSwingApplication {
         if (world.hasGameEnded == 0) {
           pointCalculator.text = "Points left: " + world.pointsInMap.toString()
         } else if (world.hasGameEnded == 2) {
-          pointCalculator.text = "YOU WON! CONCRATULATIONS!"
+          pointCalculator.text = "YOU WON! CONGRATULATIONS!"
         } else if(world.hasGameEnded == 1) {
           pointCalculator.text = "GAME OVER"
         }
+        
+        if (world.pelletDuration > 0) {
+          world.pelletDuration -= 1
+          }
+        else world.powerPelletActive = false
     })
     
     timer.start()

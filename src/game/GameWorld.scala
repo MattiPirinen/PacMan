@@ -28,6 +28,9 @@ class GameWorld(val name: String) {
   val player = new Player(cellSize, cellSize, worldGrid) // Game player
   var points = 0
   
+  var powerPelletActive = false
+  var pelletDuration = 0
+  
   def wonGame:Boolean = pointsInMap == 0
   
   
@@ -66,6 +69,10 @@ class GameWorld(val name: String) {
           case "pointItem" => {
             points += 1
             this.pointsInMap -= 1
+          }
+          case "powerPellet" => {
+            this.activatePowerPellet()
+            
           }
         }
         if (this.pointsInMap == 0) this.hasGameEnded = 2
@@ -120,11 +127,22 @@ class GameWorld(val name: String) {
     if (ghost.counter == ghost.speed) {
       if (ghost.findDirections.size > 0) ghost.chooseDirection(ghost.x,ghost.y,player)
       moveCharacter(ghost,ghost.currentDirection)
-      if (worldGrid((ghost.x + cellSize/2) /cellSize)((ghost.y + cellSize/2) / cellSize).hasPlayer)
-        this.hasGameEnded = 1
-      ghost.counter = 1
+      if (worldGrid((ghost.x + cellSize/2) /cellSize)((ghost.y + cellSize/2) / cellSize).hasPlayer) {
+        if (this.powerPelletActive == true){
+          ghost.x=14 * this.cellSize
+          ghost.y=14 * this.cellSize
+          ghost.counter = -1000
+          }
+        else this.hasGameEnded = 1
+      }
+      else ghost.counter = 1
     } else ghost.counter += 1
     
+  }
+  
+  def activatePowerPellet(){
+    this.powerPelletActive = true
+    this.pelletDuration = View.framerate * 250
   }
   
 }
