@@ -1,6 +1,6 @@
 package game
 
-
+import javax.sound.sampled._
 
 class GameWorld(val name: String) {
   
@@ -30,6 +30,8 @@ class GameWorld(val name: String) {
   
   var powerPelletActive = false
   var pelletDuration = 0
+  
+  val sound = new Sound
   
   def wonGame:Boolean = pointsInMap == 0
   
@@ -132,8 +134,12 @@ class GameWorld(val name: String) {
           ghost.x=14 * this.cellSize
           ghost.y=14 * this.cellSize
           ghost.counter = -1000
+          sound.playPowerupSound()
           }
-        else this.hasGameEnded = 1
+        else {
+          this.hasGameEnded = 1
+          sound.playDeathSound()
+          }
       }
       else ghost.counter = 1
     } else ghost.counter += 1
@@ -143,6 +149,7 @@ class GameWorld(val name: String) {
   def activatePowerPellet(){
     this.powerPelletActive = true
     this.pelletDuration = View.framerate * 250
+    sound.playPowerPillSound()
   }
   
 }

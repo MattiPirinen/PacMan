@@ -17,6 +17,7 @@ object View extends SimpleSwingApplication {
   val r = scala.util.Random 
   val canvas: GridPanel = new GridPanel(rows0 = world.height, cols0 = world.width) { 
     preferredSize = new Dimension(screenWidth, world.height * cellSize) // how many pixels the play window is
+  
     
     override def paintComponent(g: Graphics2D) {
       
@@ -118,7 +119,10 @@ object View extends SimpleSwingApplication {
         if (world.pelletDuration > 0) {
           world.pelletDuration -= 1
           }
-        else world.powerPelletActive = false
+        else {
+          world.powerPelletActive = false
+          if (world.sound.pPillSound.isRunning()) world.sound.pPillSound.stop()
+        }
     })
     
     timer.start()
