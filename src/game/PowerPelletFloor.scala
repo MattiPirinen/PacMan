@@ -1,9 +1,10 @@
 package game
 
-class Floor extends Spot {
+class PowerPelletFloor extends Spot {
+  
   
   private val pUnPassable = false
-  private var itemi: Option[Item] = Some(new pointItem)
+  private var itemi: Option[Item] = Some(new powerPellet)
   private var pHasPlayer = false
   
   def hasItem = itemi != None
@@ -11,7 +12,7 @@ class Floor extends Spot {
   
   def addItem(item:Item): Unit = this.itemi = Some(item)
   
-  def itemType = "pointItem"
+  def itemType = "powerPellet"
   
   def removeItem: Option[Item] = {
     var valiItemi: Option[Item] = None

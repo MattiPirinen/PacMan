@@ -8,6 +8,8 @@ trait Spot {
   
   def hasItem: Boolean
   
+  def itemType: String
+  
   def removeItem: Option[Item]
   
   def hasPlayer: Boolean
