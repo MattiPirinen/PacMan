@@ -21,7 +21,6 @@ object View extends SimpleSwingApplication {
   val framerate: Int = 1000/150 //Refresh rate of the game
   var counter = 1
   val r = scala.util.Random 
-  val testiKuva = new Image("Graphics.png")
   
    // #################################### Creation of GUI objects ##############################################
   
@@ -122,6 +121,13 @@ object View extends SimpleSwingApplication {
   val buttonFont = new Font("Arial",0,20)
   
   val newGameButton = new Button("New Game") {
+    
+    listenTo(this)
+    reactions += {
+      case clickEvent: ButtonClicked =>
+        world = new GameWorld("Peli1")  
+    }
+    
     preferredSize = buttonSize
     minimumSize = buttonSize
     maximumSize = buttonSize
@@ -129,18 +135,40 @@ object View extends SimpleSwingApplication {
   }
  
   val quitButton = new Button("Quit") {
+    
+    listenTo(this)
+    reactions += {
+      case clickEvent: ButtonClicked =>
+        quit() 
+    }
+    
     preferredSize = buttonSize
     minimumSize = buttonSize
     maximumSize = buttonSize
     font = buttonFont
   }
   val helpButton = new Button("Help") {
+    
+    listenTo(this)
+    reactions += {
+      case clickEvent: ButtonClicked =>
+        world.hasGameEnded = 3
+    }
+    
+    
     preferredSize = buttonSize
     minimumSize = buttonSize
     maximumSize = buttonSize
     font = buttonFont
   }
   val optionButton = new Button ("Option") {
+    
+    listenTo(this)
+    reactions += {
+      case clickEvent: ButtonClicked =>
+        // TODO: This is missing!
+    }
+    
     preferredSize = buttonSize
     minimumSize = buttonSize
     maximumSize = buttonSize
@@ -219,28 +247,14 @@ object View extends SimpleSwingApplication {
             
     // Listens to the keys and acts according to the input
     listenTo(canvas.keys)
-    listenTo(newGameButton)
+
     reactions += {
       
       case KeyPressed(_, c,_,_) => {
         world.checkDirectionChange(c.toString())
 
       }
-      
-      case ButtonClicked(_) => 
-        world = new GameWorld("Peli1")  
-    }
-    listenTo(quitButton)
-    reactions += {
-        case ButtonClicked(_) => 
-          quit()
-    }
-    
-    listenTo(helpButton)
-    reactions += {
-        case ButtonClicked(_) => 
-          world.hasGameEnded = 3
-    }
+    } 
   }
 
 
