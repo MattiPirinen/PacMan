@@ -14,7 +14,7 @@ class Player(x: Int,y: Int, val gridMap: Array[Array[Spot]]) extends Character(x
   
   var nextDirection: Option[Vector[Int]] = None
   
-  speed = -10000
+  speed = 2
   
 
   /*
