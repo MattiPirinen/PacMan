@@ -4,7 +4,7 @@ import javax.sound.sampled._
 
 
 
-class GameWorld(val name: String) {
+class GameWorld(val name: String, currentLevel:Int) {
   
   var hasGameEnded:Int = 0
   var hasGameBeenLost = false
@@ -14,7 +14,7 @@ class GameWorld(val name: String) {
   
   
   // #################################### Game world creation ##############################################
-  val worldGrid: Array[Array[Spot]] = gameField.gridMap(1) //Map for the game
+  val worldGrid: Array[Array[Spot]] = gameField.gridMap(currentLevel) //Map for the game
   
   //Adds items
   val r = scala.util.Random
@@ -36,7 +36,7 @@ class GameWorld(val name: String) {
   
   
   
-  var pointsInMap = gameField.amonthOfPoints(1) - 1 //points in the map
+  var pointsInMap = gameField.amonthOfPoints(currentLevel)   -1 //points in the map
   
   //Size for game cells
   val cellSize = 25
@@ -114,7 +114,9 @@ class GameWorld(val name: String) {
             this.activatePowerPellet()
           }
         }
-        if (this.pointsInMap == 0) this.hasGameEnded = 2
+        if (this.pointsInMap == 0) {
+          this.hasGameEnded = 2
+        }
           
       }
       
@@ -175,7 +177,7 @@ class GameWorld(val name: String) {
           }
         else {
           Sound.playDeathSound()
-          if (lives == 0) {
+          if (lives == 1) {
             this.hasGameEnded = 1
             }
           else {

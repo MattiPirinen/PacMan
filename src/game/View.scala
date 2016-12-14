@@ -10,8 +10,8 @@ import java.io.File
 object View extends SimpleSwingApplication {
   
   
-  
-  var world = new GameWorld("Peli1")
+  var currentLevel = 1
+  var world = new GameWorld("Peli1", currentLevel)
  
   
   var showHelpMessage = false
@@ -20,7 +20,7 @@ object View extends SimpleSwingApplication {
   val cellSize = world.cellSize
   val framerate: Int = 1000/150 //Refresh rate of the game
   var counter = 1
-  val r = scala.util.Random 
+  val r = scala.util.Random
   
    // #################################### Creation of GUI objects ##############################################
   
@@ -124,8 +124,10 @@ object View extends SimpleSwingApplication {
     
     listenTo(this)
     reactions += {
-      case clickEvent: ButtonClicked =>
-        world = new GameWorld("Peli1")  
+      case clickEvent: ButtonClicked => {
+        currentLevel = 1
+        world = new GameWorld("Peli1", 1) 
+        }  
     }
     
     preferredSize = buttonSize
@@ -221,8 +223,14 @@ object View extends SimpleSwingApplication {
           pointCalculator.text = "Points left: " + world.pointsInMap.toString()
           lifeCalculator.text = "Lives left: "+ world.lives +"      "
         } else if (world.hasGameEnded == 2) {
+          if (currentLevel == 3){
           pointCalculator.text = "YOU WON! CONGRATULATIONS!"
-        } else if(world.hasGameEnded == 1) {
+          }
+          else {
+            currentLevel += 1
+            world = new GameWorld("Peli1", currentLevel)
+          }
+         }else if(world.hasGameEnded == 1) {
           var stopped = 0
           if(stopped == 0) {
             world.ghostRandom.foreach(i => i.pauseMove())
