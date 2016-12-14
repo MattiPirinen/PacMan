@@ -10,10 +10,10 @@ import java.io.File
 object View extends SimpleSwingApplication {
   
   
+  var currentLevel = 1
+  var world = new GameWorld("Peli1", currentLevel)
+  GameWorld.gameState = "StartScreen"
   
-  var world = new GameWorld("Peli1")
- 
-  var gameState = 1
   var showHelpMessage = false
   val screenWidth = world.width * world.cellSize
   val screenHeight = world.height * world.cellSize
@@ -32,10 +32,10 @@ object View extends SimpleSwingApplication {
     override def paintComponent(g: Graphics2D) {
       
       
-      world.hasGameEnded match {
+      GameWorld.gameState match {
         
         
-        case 0 => {
+        case "Game" => {
           for (i <- 0 until world.width) {
             for (k <- 0 until world.height) { // Loop through the world grid
               world.worldGrid(i)(k).color match {       // Match what is found in every position
@@ -73,17 +73,17 @@ object View extends SimpleSwingApplication {
           g.setColor(Color.RED)
         }
         
-        case 1 => {
+        case "Death" => {
           g.setColor(Color.BLACK)
           g.fillRect(0,0, screenWidth * cellSize, screenHeight * cellSize)   
         }
         
-        case 2 => {
+        case "Victory" => {
           g.setColor(Color.BLACK)
           g.fillRect(0,0, screenWidth * cellSize, screenHeight * cellSize)   
         }
         
-        case 3 => {
+        case "StartScreen" => {
           g.drawImage(ImageIO.read(new File("StartScreen.png")), null, 0, 0)
         }
       }
@@ -125,7 +125,10 @@ object View extends SimpleSwingApplication {
     listenTo(this)
     reactions += {
       case clickEvent: ButtonClicked =>
-        world = new GameWorld("Peli1")  
+        world = new GameWorld("Peli1", currentLevel)  
+        GameWorld.gameState = "Game"
+        canvas.requestFocus()
+
     }
     
     preferredSize = buttonSize
@@ -152,7 +155,8 @@ object View extends SimpleSwingApplication {
     listenTo(this)
     reactions += {
       case clickEvent: ButtonClicked =>
-        world.hasGameEnded = 3
+        GameWorld.gameState = "StartScreen"
+        canvas.requestFocus()
     }
     
     
@@ -166,6 +170,7 @@ object View extends SimpleSwingApplication {
     listenTo(this)
     reactions += {
       case clickEvent: ButtonClicked =>
+        canvas.requestFocus()
         // TODO: This is missing!
     }
     
@@ -217,12 +222,18 @@ object View extends SimpleSwingApplication {
           world.moveGhost(ghost)
         }
         repaint()  
-        if (world.hasGameEnded == 0) {
+        if (GameWorld.gameState == "Game") {
           pointCalculator.text = "Points left: " + world.pointsInMap.toString()
           lifeCalculator.text = "Lives left: "+ world.lives +"      "
-        } else if (world.hasGameEnded == 2) {
+        } else if (GameWorld.gameState == "Victory") {
+          if (currentLevel == 3){
           pointCalculator.text = "YOU WON! CONGRATULATIONS!"
-        } else if(world.hasGameEnded == 1) {
+          }
+          else {
+            currentLevel += 1
+            world = new GameWorld("Peli1", currentLevel)
+          }
+         }else if(GameWorld.gameState == "Death") {
           var stopped = 0
           if(stopped == 0) {
             world.ghostRandom.foreach(i => i.pauseMove())

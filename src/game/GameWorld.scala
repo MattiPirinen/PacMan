@@ -2,19 +2,20 @@ package game
 
 import javax.sound.sampled._
 
+object GameWorld {
+  var gameState = "Game"
+}
 
-
-class GameWorld(val name: String) {
+class GameWorld(val name: String, currentLevel:Int) {
   
-  var hasGameEnded:Int = 0
   var hasGameBeenLost = false
   var lives = 3
   val width = 28 // "cells" in width direction
   val height = 31 // "cells" in height direction
-  
+  var pointsInMap =  0//points in the map
   
   // #################################### Game world creation ##############################################
-  val worldGrid: Array[Array[Spot]] = gameField.gridMap(1) //Map for the game
+  val worldGrid: Array[Array[Spot]] = gameField.gridMap(currentLevel) //Map for the game
   
   //Adds items
   val r = scala.util.Random
@@ -28,6 +29,7 @@ class GameWorld(val name: String) {
       } else {
         y.addItem(new PointItem)
         y.itemType = "pointItem"
+        this.pointsInMap += 1
       }
       
     }
@@ -36,8 +38,7 @@ class GameWorld(val name: String) {
   
   
   
-  var pointsInMap = gameField.amonthOfPoints(1) - 1 //points in the map
-  
+
   //Size for game cells
   val cellSize = 25
   
@@ -114,7 +115,9 @@ class GameWorld(val name: String) {
             this.activatePowerPellet()
           }
         }
-        if (this.pointsInMap == 0) this.hasGameEnded = 2
+        if (this.pointsInMap == 0) {
+          GameWorld.gameState = "Victory"
+        }
           
       }
       
@@ -175,8 +178,8 @@ class GameWorld(val name: String) {
           }
         else {
           Sound.playDeathSound()
-          if (lives == 0) {
-            this.hasGameEnded = 1
+          if (lives == 1) {
+            GameWorld.gameState = "Death"
             }
           else {
             player.counter = -600
