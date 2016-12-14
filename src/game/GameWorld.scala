@@ -8,6 +8,7 @@ class GameWorld(val name: String) {
   
   var hasGameEnded:Int = 0
   var hasGameBeenLost = false
+  var lives = 3
   val width = 28 // "cells" in width direction
   val height = 31 // "cells" in height direction
   
@@ -42,9 +43,9 @@ class GameWorld(val name: String) {
   
   
   //creates random ghosts
-  val ghostRandom: Vector[Ghost] = Vector(new Ghost1(15 * this.cellSize, 15 * this.cellSize, worldGrid, cellSize),
-                                      new Ghost1(15 * this.cellSize, 15 * this.cellSize,worldGrid,cellSize),
-                                      new Ghost1(15 * this.cellSize, 15 * this.cellSize,worldGrid,cellSize),
+  val ghostRandom: Vector[Ghost] = Vector(new Ghost1(15 * this.cellSize, 14 * this.cellSize, worldGrid, cellSize),
+                                      new Ghost1(15 * this.cellSize, 14 * this.cellSize,worldGrid,cellSize),
+                                      new Ghost1(15 * this.cellSize, 14 * this.cellSize,worldGrid,cellSize),
                                       new Ghost2(15 * this.cellSize, 14 * this.cellSize,worldGrid,cellSize))
                                       
   //Speed for ghosts
@@ -53,7 +54,7 @@ class GameWorld(val name: String) {
   // Creates player
   val player = new Player(cellSize, cellSize, worldGrid) // Game player
   
-  // Amouth of points collected
+  // Amount of points collected
   var points = 0
   
   
@@ -111,9 +112,6 @@ class GameWorld(val name: String) {
           }
           case "powerPellet" => {
             this.activatePowerPellet()
-            
-            ghostRandom.foreach(_.pauseMove())
-            
           }
         }
         if (this.pointsInMap == 0) this.hasGameEnded = 2
@@ -176,8 +174,19 @@ class GameWorld(val name: String) {
 
           }
         else {
-          this.hasGameEnded = 1
           Sound.playDeathSound()
+          if (lives == 0) {
+            this.hasGameEnded = 1
+            }
+          else {
+            player.counter = -600
+            ghostRandom.foreach(i => i.counter = -600)
+            player.x = 1 * this.cellSize
+            player.y = 1 * this.cellSize
+            ghostRandom foreach(i => i.x = 14 * this.cellSize)
+            ghostRandom foreach(i => i.y = 14 * this.cellSize)
+            lives -=1
+          }
           }
       }
       else ghost.counter = 1
