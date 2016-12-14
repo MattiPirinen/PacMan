@@ -3,7 +3,7 @@ package game
 class Floor extends Spot {
   
   private val pUnPassable = false
-  private var itemi: Option[Item] = Some(new pointItem)
+  private var itemi: Option[Item] = None
   private var pHasPlayer = false
   
   def hasItem = itemi != None

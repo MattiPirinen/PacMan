@@ -38,7 +38,13 @@ object gameField {
                                                               Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1))) // 31
   
                                             
-  def gridMap(number:Int): Array[Array[Spot]] = gameFields(number).map(_.map(value => if(value == 1) new Wall else if (value == 2) new EmptyFloor else if (value == 3) new PowerPelletFloor else new Floor)).transpose
+  def gridMap(number:Int): Array[Array[Spot]] =  {
+    gameFields(number).map(_.map(value => 
+      if(value == 1) new Wall 
+      else if (value == 2) new EmptyFloor 
+      else if (value == 3) new PowerPelletFloor 
+      else new Floor)).transpose
+  }
 
   def amonthOfPoints(number:Int): Int = gameFields(number).map(_.filter(_ == 0)).flatten.size
   

@@ -9,10 +9,19 @@ class GameWorld(val name: String) {
   val width = 28 // "cells" in width direction
   val height = 31 // "cells" in heigth direction
   
+  
+  // #################################### Game world creation ##############################################
   val worldGrid: Array[Array[Spot]] = gameField.gridMap(1) //Map for the game
+  
+  //Adds items
+  
+  
+  
+  
+  
   var pointsInMap = gameField.amonthOfPoints(1) - 1 //points in the map
   
-  
+  //Size for game cells
   val cellSize = 25
   
   
@@ -22,19 +31,27 @@ class GameWorld(val name: String) {
                                       new Ghost1(15 * this.cellSize, 15 * this.cellSize,worldGrid,cellSize),
                                       new Ghost2(15 * this.cellSize, 14 * this.cellSize,worldGrid,cellSize))
                                       
-             
+  //Speed for ghosts
   this.ghostRandom.foreach(_.speed = 3)
   
+  // Creates player
   val player = new Player(cellSize, cellSize, worldGrid) // Game player
+  
+  // Amouth of points collected
   var points = 0
   
+  
+  //Sets the initial values for powerPellet item effects
   var powerPelletActive = false
   var pelletDuration = 0
   
-  val sound = new Sound
-  
+
+  //Has the game been won?
   def wonGame:Boolean = pointsInMap == 0
   
+  /* 
+   * This method moves the player
+   */
   
   def movePlayer = {
     if (player.counter == player.speed) {
@@ -91,7 +108,7 @@ class GameWorld(val name: String) {
   
   // This method moves the character. If character goes outside of the map, it
   // appears from the other side of the map.
-  def moveCharacter(character: Character, moveVector: Vector[Int]) =  {
+  private def moveCharacter(character: Character, moveVector: Vector[Int]) =  {
     val addX = moveVector(0)
     val addY = moveVector(1)
 
@@ -134,11 +151,11 @@ class GameWorld(val name: String) {
           ghost.x=14 * this.cellSize
           ghost.y=14 * this.cellSize
           ghost.counter = -1000
-          sound.playPowerupSound()
+          Sound.playPowerupSound()
           }
         else {
           this.hasGameEnded = 1
-          sound.playDeathSound()
+          Sound.playDeathSound()
           }
       }
       else ghost.counter = 1
@@ -149,7 +166,7 @@ class GameWorld(val name: String) {
   def activatePowerPellet(){
     this.powerPelletActive = true
     this.pelletDuration = View.framerate * 250
-    sound.playPowerPillSound()
+    Sound.playPowerPillSound()
   }
   
 }

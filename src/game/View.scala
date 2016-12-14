@@ -21,6 +21,7 @@ object View extends SimpleSwingApplication {
     
     override def paintComponent(g: Graphics2D) {
       
+      
       world.hasGameEnded match {
         case 0 => {
           for (i <- 0 until world.width) {
@@ -116,12 +117,15 @@ object View extends SimpleSwingApplication {
           pointCalculator.text = "GAME OVER"
         }
         
-        if (world.pelletDuration > 0) {
-          world.pelletDuration -= 1
+        
+        if (world.powerPelletActive == true) {
+          if (world.pelletDuration > 0) {
+            world.pelletDuration -= 1
+            }
+          else {
+            world.powerPelletActive = false
+            if (Sound.pPillSound.isRunning()) Sound.pPillSound.stop()
           }
-        else {
-          world.powerPelletActive = false
-          if (world.sound.pPillSound.isRunning()) world.sound.pPillSound.stop()
         }
     })
     
@@ -130,8 +134,11 @@ object View extends SimpleSwingApplication {
     // Listens to the keys and acts according to the input
     listenTo(canvas.keys)
     reactions += {
+      
       case KeyPressed(_, c,_,_) => {
         world.checkDirectionChange(c.toString())
+
+        
       }
     }
   }

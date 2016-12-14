@@ -3,7 +3,7 @@ package game
 import javax.sound.sampled._
 import java.io.File
 
-class Sound {
+object Sound {
   
   
   private val pPill = new File("sounds/pPill.wav")
