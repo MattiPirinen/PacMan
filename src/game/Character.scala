@@ -45,23 +45,23 @@ class Character(var x:Int, var y:Int) {
       //If player wants to go to X-direction checks is there a wall in X direction
       if (addX != 0) {
         if (addX >= 0) {
-          i = !world((this.x + cellSize)/cellSize) (this.y/cellSize ).unPassable &&
-            !world((this.x + cellSize)/cellSize) ((this.y+cellSize-1)/cellSize ).unPassable
+          i = !world((this.x + cellSize)/cellSize) (this.y/cellSize ).isUnPassable &&
+            !world((this.x + cellSize)/cellSize) ((this.y+cellSize-1)/cellSize ).isUnPassable
 
         }  else { 
-          i = !world((this.x-1)/cellSize)(this.y/cellSize ).unPassable &&
-              !world((this.x-1)/cellSize)((this.y+cellSize-1)/cellSize ).unPassable
+          i = !world((this.x-1)/cellSize)(this.y/cellSize ).isUnPassable &&
+              !world((this.x-1)/cellSize)((this.y+cellSize-1)/cellSize ).isUnPassable
         }
       } 
       
       //If player wants to go to X-direction checks is there a wall in Y direction
       else if (addY != 0) {
         if (addY >= 0) {
-          j = !world(this.x/cellSize)((this.y + cellSize) / cellSize).unPassable &&
-            !world((this.x+cellSize-1)/cellSize)((this.y + cellSize) / cellSize).unPassable
+          j = !world(this.x/cellSize)((this.y + cellSize) / cellSize).isUnPassable &&
+            !world((this.x+cellSize-1)/cellSize)((this.y + cellSize) / cellSize).isUnPassable
         } else  {
-          j = !world(this.x/cellSize)((this.y-1)/cellSize).unPassable && 
-            !world((this.x+cellSize-1)/cellSize)((this.y-1) / cellSize).unPassable 
+          j = !world(this.x/cellSize)((this.y-1)/cellSize).isUnPassable && 
+            !world((this.x+cellSize-1)/cellSize)((this.y-1) / cellSize).isUnPassable 
         }
       }
       i && j

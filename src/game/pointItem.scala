@@ -1,6 +1,6 @@
 package game
 
-class pointItem extends Item {
+class PointItem extends Item {
   
   private val pItemType = "pointItem"
   

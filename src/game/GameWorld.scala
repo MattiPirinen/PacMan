@@ -2,6 +2,8 @@ package game
 
 import javax.sound.sampled._
 
+
+
 class GameWorld(val name: String) {
   
   var hasGameEnded:Int = 0
@@ -14,7 +16,21 @@ class GameWorld(val name: String) {
   val worldGrid: Array[Array[Spot]] = gameField.gridMap(1) //Map for the game
   
   //Adds items
-  
+  val r = scala.util.Random
+  var randomArvo = 0
+  for (x <- worldGrid; y <- x) {
+    if (y.canHaveItem) {
+      randomArvo = r.nextInt(30)
+      if(randomArvo == 29) {
+        y.addItem(new PowerPelletItem)
+        y.itemType = "powerPellet"
+      } else {
+        y.addItem(new PointItem)
+        y.itemType = "pointItem"
+      }
+      
+    }
+  }
   
   
   
@@ -57,7 +73,7 @@ class GameWorld(val name: String) {
     if (player.counter == player.speed) {
       
       //Remove player from previous spot
-      worldGrid((player.x + cellSize/2) /cellSize)((player.y + cellSize/2) / cellSize).removePlayer
+      worldGrid((player.x + cellSize/2) /cellSize)((player.y + cellSize/2) / cellSize).hasPlayer = false
       
       //Moves the player
       
@@ -100,7 +116,7 @@ class GameWorld(val name: String) {
       
       //Indicates to the spot where player is that the spot has player
       
-      worldGrid((player.x + cellSize/2) /cellSize)((player.y + cellSize/2) / cellSize).addPlayer
+      worldGrid((player.x + cellSize/2) /cellSize)((player.y + cellSize/2) / cellSize).hasPlayer = true
       player.counter = 1
     } else player.counter += 1
     

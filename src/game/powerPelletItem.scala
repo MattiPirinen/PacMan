@@ -1,8 +1,10 @@
 package game
 
-class powerPelletItem extends Item {
+class PowerPelletItem extends Item {
   
   def itemType = "powerPellet"
+  
+  
   
   
 }

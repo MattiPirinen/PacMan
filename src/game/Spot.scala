@@ -1,22 +1,27 @@
 package game
 
-trait Spot {
+abstract class Spot {
   
-  def unPassable: Boolean
+  private var itemi: Option[Item] = None
   
-  def color: String
+  var canHaveItem:Boolean
+  var hasPlayer:Boolean
+  var isUnPassable: Boolean
+  var color:String
+  var itemType = ""
   
-  def hasItem: Boolean
+  def hasItem = itemi != None
   
-  def itemType: String
+  def addItem(item:Item): Unit = this.itemi = Some(item)
   
-  def removeItem: Option[Item]
+  def removeItem: Option[Item] = {
+    var valiItemi: Option[Item] = None
+    if (this.itemi != None) valiItemi = this.itemi
+    itemi = None
+    valiItemi
+  }
   
-  def hasPlayer: Boolean
   
-  def addPlayer: Unit
-  
-  def removePlayer: Unit
 }
 
 
