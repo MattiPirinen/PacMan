@@ -72,6 +72,10 @@ class GameWorld(val name: String) {
   def movePlayer = {
     if (player.counter == player.speed) {
       
+      //resets counter
+      player.counter = 1
+      
+      
       //Remove player from previous spot
       worldGrid((player.x + cellSize/2) /cellSize)((player.y + cellSize/2) / cellSize).hasPlayer = false
       
@@ -108,6 +112,8 @@ class GameWorld(val name: String) {
           case "powerPellet" => {
             this.activatePowerPellet()
             
+            ghostRandom.foreach(_.pauseMove())
+            
           }
         }
         if (this.pointsInMap == 0) this.hasGameEnded = 2
@@ -117,7 +123,7 @@ class GameWorld(val name: String) {
       //Indicates to the spot where player is that the spot has player
       
       worldGrid((player.x + cellSize/2) /cellSize)((player.y + cellSize/2) / cellSize).hasPlayer = true
-      player.counter = 1
+
     } else player.counter += 1
     
   }
@@ -157,7 +163,6 @@ class GameWorld(val name: String) {
   
   def moveGhost(ghost :Ghost) = {
 
-
     
     if (ghost.counter == ghost.speed) {
       if (ghost.findDirections.size > 0) ghost.chooseDirection(ghost.x,ghost.y,player)
@@ -168,6 +173,7 @@ class GameWorld(val name: String) {
           ghost.y=14 * this.cellSize
           ghost.counter = -1000
           Sound.playPowerupSound()
+
           }
         else {
           this.hasGameEnded = 1
