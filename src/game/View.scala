@@ -113,7 +113,7 @@ object View extends SimpleSwingApplication {
   pointCalculator.font = labelFont 
   //pointCalculator.horizontalAlignment = Alignment.Center
   
-  val lifeCalculator = new Label("Lives left: 3      ")
+  val lifeCalculator = new Label("Lives left: "+ world.lives +"      ")
   lifeCalculator.font = labelFont
   
   
@@ -191,6 +191,7 @@ object View extends SimpleSwingApplication {
         repaint()  
         if (world.hasGameEnded == 0) {
           pointCalculator.text = "Points left: " + world.pointsInMap.toString()
+          lifeCalculator.text = "Lives left: "+ world.lives +"      "
         } else if (world.hasGameEnded == 2) {
           pointCalculator.text = "YOU WON! CONGRATULATIONS!"
         } else if(world.hasGameEnded == 1) {
@@ -229,18 +230,21 @@ object View extends SimpleSwingApplication {
       case ButtonClicked(_) => 
         world = new GameWorld("Peli1")  
     }
+    listenTo(quitButton)
+    reactions += {
+        case ButtonClicked(_) => 
+          quit()
+    }
+    
+    listenTo(helpButton)
+    reactions += {
+        case ButtonClicked(_) => 
+          world.hasGameEnded = 3
+    }
   }
 
-  listenTo(quitButton)
-  reactions += {
-      case ButtonClicked(_) => 
-        quit()
-  }
+
   
-  listenTo(helpButton)
-  reactions += {
-      case ButtonClicked(_) => 
-        world.hasGameEnded = 3
-  }
+
   
 }
