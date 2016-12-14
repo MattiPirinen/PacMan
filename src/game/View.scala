@@ -4,18 +4,24 @@ import scala.swing._
 import scala.swing.event._
 import java.awt.Color
 import javax.swing._
+import javax.imageio.ImageIO
+import java.io.File
 
 object View extends SimpleSwingApplication {
   
-  val world = new GameWorld("Peli1")
+  
+  
+  var world = new GameWorld("Peli1")
  
+  
+  var showHelpMessage = false
   val screenWidth = world.width * world.cellSize
   val screenHeight = world.height * world.cellSize
   val cellSize = world.cellSize
   val framerate: Int = 1000/150 //Refresh rate of the game
   var counter = 1
   val r = scala.util.Random 
-  
+  val testiKuva = new Image("Graphics.png")
   
    // #################################### Creation of GUI objects ##############################################
   
@@ -28,6 +34,8 @@ object View extends SimpleSwingApplication {
       
       
       world.hasGameEnded match {
+        
+        
         case 0 => {
           for (i <- 0 until world.width) {
             for (k <- 0 until world.height) { // Loop through the world grid
@@ -74,6 +82,10 @@ object View extends SimpleSwingApplication {
         case 2 => {
           g.setColor(Color.BLACK)
           g.fillRect(0,0, screenWidth * cellSize, screenHeight * cellSize)   
+        }
+        
+        case 3 => {
+          g.drawImage(ImageIO.read(new File("Graphics.png")), null, 0, 0)
         }
       }
       
@@ -184,7 +196,6 @@ object View extends SimpleSwingApplication {
         } else if(world.hasGameEnded == 1) {
           var stopped = 0
           if(stopped == 0) {
-            world.player.pauseMove()
             world.ghostRandom.foreach(i => i.pauseMove())
             pointCalculator.text = "GAME OVER"
             stopped = 1
@@ -207,13 +218,29 @@ object View extends SimpleSwingApplication {
             
     // Listens to the keys and acts according to the input
     listenTo(canvas.keys)
+    listenTo(newGameButton)
     reactions += {
       
       case KeyPressed(_, c,_,_) => {
         world.checkDirectionChange(c.toString())
 
-        
       }
+      
+      case ButtonClicked(_) => 
+        world = new GameWorld("Peli1")  
     }
   }
+
+  listenTo(quitButton)
+  reactions += {
+      case ButtonClicked(_) => 
+        quit()
+  }
+  
+  listenTo(helpButton)
+  reactions += {
+      case ButtonClicked(_) => 
+        world.hasGameEnded = 3
+  }
+  
 }
