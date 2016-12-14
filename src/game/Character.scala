@@ -19,7 +19,8 @@ class Character(var x:Int, var y:Int) {
   }
   
   var speed = 2
-  
+  private var baseSpeed = 2
+  private var savedSpeed = 2
 
   
   val directions: Map[String,Vector[Int]] = 
@@ -28,7 +29,19 @@ class Character(var x:Int, var y:Int) {
       "Up" ->      Vector( 0,-1), 
       "Right" ->   Vector( 1, 0))  
   
+  def pauseMove() = {
+    savedSpeed = speed
+    speed = 0
+  }
   
+  def resumeMove() = {
+    speed = savedSpeed
+  }
+  
+  def setSpeedToBase() = {
+    speed = baseSpeed
+  }
+      
   /*Determines can player move to the direction given
    * @param direction The direction in which the conditions are checked
    * @param world  		World in which the character is located

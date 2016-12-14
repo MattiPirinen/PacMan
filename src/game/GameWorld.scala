@@ -9,12 +9,10 @@ class GameWorld(val name: String) {
   var hasGameEnded:Int = 0
   var hasGameBeenLost = false
   val width = 28 // "cells" in width direction
-  val height = 31 // "cells" in heigth direction
+  val height = 31 // "cells" in height direction
   
   
   // #################################### Game world creation ##############################################
-  var pointsInMap = 0
-  
   val worldGrid: Array[Array[Spot]] = gameField.gridMap(1) //Map for the game
   
   //Adds items
@@ -29,13 +27,15 @@ class GameWorld(val name: String) {
       } else {
         y.addItem(new PointItem)
         y.itemType = "pointItem"
-        this.pointsInMap += 1
       }
       
     }
   }
-  //########################################################################################################
   
+  
+  
+  
+  var pointsInMap = gameField.amonthOfPoints(1) - 1 //points in the map
   
   //Size for game cells
   val cellSize = 25
@@ -96,7 +96,7 @@ class GameWorld(val name: String) {
       //Moves the player
       moveCharacter(player,moveVector)
       
-      // if there is an item in the cell player is in removes it and does the effect the item has
+      // if there is an item in the cell player is in removes it
       var itemi:Option [Item] = None
       if (worldGrid((player.x + cellSize/2) /cellSize)((player.y + cellSize/2) / cellSize).hasItem) {
         itemi = worldGrid((player.x + cellSize/2) /cellSize)((player.y + cellSize/2) / cellSize).removeItem
@@ -143,7 +143,7 @@ class GameWorld(val name: String) {
   
   
   //This methods checks if player can make the requested direction change
-  //If it is not possible reservers the direction as nextDirection.
+  //If it is not possible reserves the direction as nextDirection.
   def checkDirectionChange(inputDirection:String) = {
     if (player.directions.contains(inputDirection)) {
       if (player.isThereNoWall(player.directions(inputDirection), worldGrid, cellSize)) {
@@ -182,7 +182,7 @@ class GameWorld(val name: String) {
   def activatePowerPellet(){
     this.powerPelletActive = true
     this.pelletDuration = View.framerate * 250
-    Sound.playPowerPillSound()
-  }
+    Sound.playPowerPillSound() }
+  
   
 }
