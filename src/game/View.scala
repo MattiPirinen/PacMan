@@ -13,7 +13,7 @@ object View extends SimpleSwingApplication {
   
   var world = new GameWorld("Peli1")
  
-  
+  var gameState = 1
   var showHelpMessage = false
   val screenWidth = world.width * world.cellSize
   val screenHeight = world.height * world.cellSize
@@ -84,7 +84,7 @@ object View extends SimpleSwingApplication {
         }
         
         case 3 => {
-          g.drawImage(ImageIO.read(new File("Graphics.png")), null, 0, 0)
+          g.drawImage(ImageIO.read(new File("StartScreen.png")), null, 0, 0)
         }
       }
       
