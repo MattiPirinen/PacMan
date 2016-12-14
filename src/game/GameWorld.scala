@@ -13,6 +13,8 @@ class GameWorld(val name: String) {
   
   
   // #################################### Game world creation ##############################################
+  var pointsInMap = 0
+  
   val worldGrid: Array[Array[Spot]] = gameField.gridMap(1) //Map for the game
   
   //Adds items
@@ -27,15 +29,13 @@ class GameWorld(val name: String) {
       } else {
         y.addItem(new PointItem)
         y.itemType = "pointItem"
+        this.pointsInMap += 1
       }
       
     }
   }
+  //########################################################################################################
   
-  
-  
-  
-  var pointsInMap = gameField.amonthOfPoints(1) - 1 //points in the map
   
   //Size for game cells
   val cellSize = 25
@@ -96,7 +96,7 @@ class GameWorld(val name: String) {
       //Moves the player
       moveCharacter(player,moveVector)
       
-      // if there is an item in the cell player is in removes it
+      // if there is an item in the cell player is in removes it and does the effect the item has
       var itemi:Option [Item] = None
       if (worldGrid((player.x + cellSize/2) /cellSize)((player.y + cellSize/2) / cellSize).hasItem) {
         itemi = worldGrid((player.x + cellSize/2) /cellSize)((player.y + cellSize/2) / cellSize).removeItem

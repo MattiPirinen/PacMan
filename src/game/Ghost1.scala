@@ -19,4 +19,5 @@ class Ghost1(x:Int, y:Int, gridMap: Array[Array[Spot]],cellSize: Int) extends Gh
   
   def color = pColor
   
+  
 }

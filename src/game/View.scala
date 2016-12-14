@@ -15,6 +15,11 @@ object View extends SimpleSwingApplication {
   val framerate: Int = 1000/150 //Refresh rate of the game
   var counter = 1
   val r = scala.util.Random 
+  
+  
+   // #################################### Creation of GUI objects ##############################################
+  
+  
   val canvas: GridPanel = new GridPanel(rows0 = world.height, cols0 = world.width) { 
     preferredSize = new Dimension(screenWidth, world.height * cellSize) // how many pixels the play window is
   
@@ -87,13 +92,63 @@ object View extends SimpleSwingApplication {
     
   }
 
-  val pointCalculator = new Label("Current points: 0")
+  
+  //Button where points are displayed
+  val pointCalculator = new Label("")
   pointCalculator.font = new Font("Arial",0,36)
+  pointCalculator.horizontalAlignment = Alignment.Right
+  
+  
+  
+  val buttonSize = new Dimension(world.width*world.cellSize/4-5,50)
+  val buttonFont = new Font("Arial",0,20)
+  
+  val newGameButton = new Button("New Game") {
+    preferredSize = buttonSize
+    minimumSize = buttonSize
+    maximumSize = buttonSize
+    font = buttonFont
+  }
+ 
+  val quitButton = new Button("Quit") {
+    preferredSize = buttonSize
+    minimumSize = buttonSize
+    maximumSize = buttonSize
+    font = buttonFont
+  }
+  val helpButton = new Button("Help") {
+    preferredSize = buttonSize
+    minimumSize = buttonSize
+    maximumSize = buttonSize
+    font = buttonFont
+  }
+  val optionButton = new Button ("Option") {
+    preferredSize = buttonSize
+    minimumSize = buttonSize
+    maximumSize = buttonSize
+    font = buttonFont
+  }
+  
+  
+  
+  val horizontalPanel = new BoxPanel(Orientation.Horizontal)
+  
+  horizontalPanel.contents += newGameButton
+  horizontalPanel.contents += quitButton
+  horizontalPanel.contents += helpButton
+  horizontalPanel.contents += optionButton
+  
   val verticalPanel = new BoxPanel(Orientation.Vertical)
   
   verticalPanel.contents += canvas
   verticalPanel.contents += pointCalculator
-    
+  verticalPanel.contents += horizontalPanel
+  
+   // ################################################################################################
+  
+  
+   //#################################### Creation of the MainFrame ##############################################
+  
   def top = new MainFrame {
     title = "Pac-Man Rip Off"
     preferredSize = new Dimension(screenWidth, screenHeight+100)

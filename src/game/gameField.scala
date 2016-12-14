@@ -45,8 +45,4 @@ object gameField {
       else new Floor)).transpose
   }
 
-
-  def amonthOfPoints(number:Int): Int = gameFields(number).map(_.filter(_ == 0)).flatten.size
-  
-  
 }
