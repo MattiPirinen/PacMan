@@ -14,6 +14,10 @@ import java.awt.image.BufferedImage
  */
 
 object Graphics {
+  val startScreen = ImageIO.read(new File("pictures/StartScreen.png"))
+  val gameOverScreen = ImageIO.read(new File("pictures/GameOverScreen.png"))
+  val pauseScreen = ImageIO.read(new File("pictures/PauseScreen.png"))
+  val victoryScreen = ImageIO.read(new File("pictures/VictoryScreen.png"))
   val blinkyUp = ImageIO.read(new File("pictures/blinky_up.png")) // load graphics
   val blinkyRight = ImageIO.read(new File("pictures/blinky_right.png"))
   val blinkyDown = ImageIO.read(new File("pictures/blinky_down.png"))

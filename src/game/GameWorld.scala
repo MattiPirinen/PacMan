@@ -240,10 +240,12 @@ class GameWorld(val name: String, currentLevel:Int) {
           Sound.playDeathSound()
           if (lives == 1) {
             GameWorld.gameState = "Death"
+            lives = 0
             }
           else {
-            player.counter = -600
-            ghostRandom.foreach(i => i.counter = -600)
+            worldGrid((player.x + cellSize/2) /cellSize)((player.y + cellSize/2) / cellSize).hasPlayer = false
+            player.counter = -400
+            ghostRandom.foreach(i => i.counter = -400)
             player.x = 1 * this.cellSize
             player.y = 1 * this.cellSize
             ghostRandom foreach(i => i.x = 14 * this.cellSize)

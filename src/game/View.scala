@@ -79,20 +79,18 @@ object View extends SimpleSwingApplication {
         }
 
         case "Death" => {
-          g.setColor(Color.BLACK)
-          g.fillRect(0, 0, screenWidth * cellSize, screenHeight * cellSize)
+          g.drawImage(Graphics.gameOverScreen, 0, 0, null)
         }
 
         case "Victory" => {
-          g.setColor(Color.BLACK)
-          g.fillRect(0, 0, screenWidth * cellSize, screenHeight * cellSize)
+          g.drawImage(Graphics.victoryScreen, 0, 0, null)
         }
 
         case "StartScreen" => {
-          g.drawImage(ImageIO.read(new File("pictures/StartScreen.png")), null, 0, 0)
+          g.drawImage(Graphics.startScreen, 0, 0, null)
         }
         case "PauseScreen" => {
-          g.drawImage(ImageIO.read(new File("pictures/PauseScreen.png")), null, 0, 0)
+          g.drawImage(Graphics.pauseScreen, 0, 0, null)
         }
       }
     }
@@ -275,6 +273,7 @@ object View extends SimpleSwingApplication {
       //If player has died
       else if (GameWorld.gameState == "Death") {
         pointCalculator.text = "GAME OVER"
+        lifeCalculator.text = "Lives left: 0       "
         if (GameWorld.madeToLeaderboard) {
           saveToLeaderBoard
         }
