@@ -26,8 +26,9 @@ class Ghost5(x:Int, y:Int, gridMap: Array[Array[Spot]],cellSize: Int, val tilesF
     //Random moves at the beginning of the level and after that uses the artificial intelligence
     //of the ghost
     if (randomCounter < randomMoves) {
-      println(this.name+ " " +randomCounter)
+      //println(this.name+ " " +randomCounter)
       this.currentDirection = availableDirections(r.nextInt(availableDirections.size))
+      println(this.name + this.currentDirection)
       randomCounter += 1
     } else {
       

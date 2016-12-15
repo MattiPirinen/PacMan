@@ -40,10 +40,10 @@ class GameWorld(val name: String, currentLevel:Int) {
   
   
   //creates random ghosts
-  val ghostRandom: Vector[Ghost] = Vector(new Ghost5(14 * this.cellSize, 14 * this.cellSize, worldGrid, cellSize, 0, false, "Erkki"),
-                                      new Ghost5(14 * this.cellSize, 14 * this.cellSize,worldGrid,cellSize,3,false,"Seppo"),
-                                      new Ghost5(14 * this.cellSize, 14 * this.cellSize,worldGrid,cellSize,-3,false,"Pertti"),
-                                      new Ghost5(14 * this.cellSize, 14 * this.cellSize,worldGrid,cellSize,0,true,"Jorma"))
+  val ghostRandom: Vector[Ghost5] = Vector(new Ghost5(14 * this.cellSize, 14 * this.cellSize, worldGrid, cellSize, 0, false, "Blinky"),
+                                      new Ghost5(14 * this.cellSize, 14 * this.cellSize,worldGrid,cellSize,3,false,"Clyde"),
+                                      new Ghost5(14 * this.cellSize, 14 * this.cellSize,worldGrid,cellSize,-3,false,"Inky"),
+                                      new Ghost5(14 * this.cellSize, 14 * this.cellSize,worldGrid,cellSize,0,true,"Pinky"))
                                       
   //Speed for ghosts
   this.ghostRandom.foreach(_.speed = 3)
