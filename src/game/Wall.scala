@@ -1,8 +1,11 @@
 package game
 
+/*
+ * This class represents a "wall" type of spot in the gameField that cannot be
+ * passed though
+ */
+
 class Wall extends Spot {
-  
-  var color = "BLACK"
   
   var canHaveItem = false
   

@@ -4,6 +4,11 @@ import scala.collection.mutable.ArrayBuffer
 import java.io._
 import scala.io.Source
 
+/*
+ * An object that represents the leaderboard of the game
+ * Saves the results in form "Name : Score"
+ */
+
 object LeaderBoard {
   
   /*

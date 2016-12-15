@@ -2,6 +2,12 @@ package game
 
 import javax.sound.sampled._
 
+/*
+ * Thic companion object contains the information about the game that goes beyod one
+ * game level
+ */
+
+
 object GameWorld {
   var gameState = "Game"
   var currentLevel = 1
@@ -20,17 +26,21 @@ object GameWorld {
   
   def madeToLeaderboard:Boolean = {
     val leaderBoard = LeaderBoard.showLeaderBoard().map(_.split(":")(1).toInt)
-    if (leaderBoard.max > totalPoints) false else true
+    if (leaderBoard.min > totalPoints) false else true
     
   }
   
   
   
 }
-
+/*
+ * This class represents one game level in the this game
+ * @Param name = Name of the game-level
+ * @Param currentLevel = int that tells us which gameField to use in the level
+ */
 class GameWorld(val name: String, currentLevel:Int) {
   
-  var hasGameBeenLost = false
+  var hasGameBeenLost = false 
   var lives = 3
   val width = 28 // "cells" in width direction
   val height = 31 // "cells" in height direction
@@ -47,12 +57,12 @@ class GameWorld(val name: String, currentLevel:Int) {
   // #################################### Game world creation ##############################################
   val worldGrid: Array[Array[Spot]] = gameField.gridMap(currentLevel) //Map for the game
   
-  //Adds items
+  //Adds items every 50th item is a PowerPellet
   val r = scala.util.Random
   var randomArvo = 0
   for (x <- worldGrid; y <- x) {
     if (y.canHaveItem) {
-      randomArvo = r.nextInt(30)
+      randomArvo = r.nextInt(50)
       if(randomArvo == 29) {
         y.addItem(new PowerPelletItem)
         y.itemType = "powerPellet"
@@ -97,6 +107,8 @@ class GameWorld(val name: String, currentLevel:Int) {
   //Has the game been won?
   def wonGame:Boolean = pointsInMap == 0
   
+  
+  
   /* 
    * This method moves the player
    */
@@ -117,6 +129,7 @@ class GameWorld(val name: String, currentLevel:Int) {
       var addX = 0
       var addY = 0
       
+      //Chooses the move vector
       if (player.nextDirection != None) {
         if (player.isThereNoWall(player.nextDirection.get,worldGrid,this.cellSize)){
           player.currentDirection = player.nextDirection.get
@@ -132,7 +145,7 @@ class GameWorld(val name: String, currentLevel:Int) {
       //Moves the player
       moveCharacter(player,moveVector)
       
-      // if there is an item in the cell player is in removes it
+      // if there is an item in the cell player is in removes
       var itemi:Option [Item] = None
       if (worldGrid((player.x + cellSize/2) /cellSize)((player.y + cellSize/2) / cellSize).hasItem) {
         itemi = worldGrid((player.x + cellSize/2) /cellSize)((player.y + cellSize/2) / cellSize).removeItem
@@ -155,6 +168,8 @@ class GameWorld(val name: String, currentLevel:Int) {
       //Indicates to the spot where player is that the spot has player
       
       worldGrid((player.x + cellSize/2) /cellSize)((player.y + cellSize/2) / cellSize).hasPlayer = true
+      
+      // Sets the player speed according to the spot speed
       worldGrid((player.x + cellSize/2) /cellSize)((player.y + cellSize/2) / cellSize).playerSpeed(player)
     } else player.counter += 1
     
@@ -167,9 +182,9 @@ class GameWorld(val name: String, currentLevel:Int) {
     val addY = moveVector(1)
 
     if (character.x + addX < 0) {
-        character.move(this.width * this.cellSize - this.cellSize*2, character.y + addY)
+        character.move(this.width * this.cellSize - this.cellSize*2.toInt, character.y + addY)
       } else if (character.y + addY < 0) {
-        character.move(character.x + addX, this.height * this.cellSize - this.cellSize*2)
+        character.move(character.x + addX, this.height * this.cellSize - this.cellSize*2.toInt)
       } else if (character.x + addX == this.width * this.cellSize - this.cellSize) {
         character.move(1, character.y + addY)
       } else if (character.y + addY == this.height * this.cellSize - this.cellSize) {
@@ -193,6 +208,8 @@ class GameWorld(val name: String, currentLevel:Int) {
     
   }
   
+  
+  //This methord moves the ghost
   def moveGhost(ghost :Ghost,home:Character) = {
 
     //Moves the ghost
@@ -239,13 +256,14 @@ class GameWorld(val name: String, currentLevel:Int) {
     } else ghost.counter += 1
     
     
-    //Sets the speed of the ghost
+    //Sets the speed of the ghost according to the speed in the spot
     worldGrid((ghost.x + cellSize/2) /cellSize)((ghost.y + cellSize/2) / cellSize).ghostSpeed(ghost)
   }
   
+  //Activates powerpellet
   def activatePowerPellet(){
     this.powerPelletActive = true
-    this.pelletDuration = View.framerate * 250
+    this.pelletDuration = View.framerate * 170
     Sound.playPowerPillSound() }
   
   

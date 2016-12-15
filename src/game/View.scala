@@ -12,17 +12,23 @@ object View extends SimpleSwingApplication {
 
   var world = new GameWorld("Peli1", GameWorld.currentLevel)
   GameWorld.gameState = "StartScreen"
-
-  var showHelpMessage = false
+  
+  
+  //Variables to be used in player animation looping
+  var playerAnimator1 = 0
+  var playerAnimator2 = 0
+  var animatorCounter = 0
+  val animatorCounterCap = 8
+  
   val screenWidth = world.width * world.cellSize
   val screenHeight = world.height * world.cellSize
   val cellSize = world.cellSize
   val framerate: Int = 1000 / 150 //Refresh rate of the game
-  var counter = 1
   val r = scala.util.Random
 
   // #################################### Creation of GUI objects ##############################################
 
+  //Play Area
   val canvas: GridPanel = new GridPanel(rows0 = world.height, cols0 = world.width) {
     preferredSize = new Dimension(screenWidth, world.height * cellSize) // how many pixels the play window is
 
@@ -30,10 +36,13 @@ object View extends SimpleSwingApplication {
 
       GameWorld.gameState match {
 
+        
         case "Game" => {
+          
+          //Draw the background
           for (i <- 0 until world.width) {
             for (k <- 0 until world.height) { // Loop through the world grid
-              g.drawImage(world.worldGrid(i)(k).image, i*cellSize, k*cellSize, null)  //Draw images that spot defines
+              g.drawImage(world.worldGrid(i)(k).image, i*cellSize, k*cellSize, null)  //Draw images that is defined in spot
               if (world.worldGrid(i)(k).hasItem) {
                 g.setColor(Color.BLUE)
                 if (world.worldGrid(i)(k).itemType == "pointItem") {
@@ -47,8 +56,14 @@ object View extends SimpleSwingApplication {
             }
           }
           //Draw player
-          g.drawImage(Graphics.pacman(world.player.currentDirection), world.player.x, world.player.y, null)
+          g.drawImage(Graphics.pacman(world.player.currentDirection), 
+              world.player.x, world.player.y, 
+              world.player.x+ world.cellSize, world.player.y + world.cellSize,
+              world.cellSize * playerAnimator1, world.cellSize * playerAnimator2, 
+              world.cellSize * playerAnimator1 + world.cellSize, world.cellSize * playerAnimator2 + world.cellSize,
+              null)
 
+          //Draw ghosts
           for (ghost <- world.ghostRandom) {
             if (world.powerPelletActive)
               g.drawImage(Graphics.scared(ghost.currentDirection), ghost.x, ghost.y, null)
@@ -60,13 +75,7 @@ object View extends SimpleSwingApplication {
               g.drawImage(Graphics.inky(ghost.currentDirection), ghost.x, ghost.y, null)
             else if (ghost.name == "Clyde")
               g.drawImage(Graphics.clyde(ghost.currentDirection), ghost.x, ghost.y, null)
-
-            // g.setColor(ghost.color)
-            // g.fillOval(ghost.x, ghost.y, cellSize, cellSize)
           }
-
-          g.setColor(Color.GRAY)
-          g.setColor(Color.RED)
         }
 
         case "Death" => {
@@ -80,17 +89,12 @@ object View extends SimpleSwingApplication {
         }
 
         case "StartScreen" => {
-          g.drawImage(ImageIO.read(new File("StartScreen.png")), null, 0, 0)
+          g.drawImage(ImageIO.read(new File("pictures/StartScreen.png")), null, 0, 0)
+        }
+        case "PauseScreen" => {
+          g.drawImage(ImageIO.read(new File("pictures/PauseScreen.png")), null, 0, 0)
         }
       }
-
-      // Creates red lines at each side of the player done for development purposes
-      /*
-      g.fillRect(player.x,0,1,height*cellSize)
-      g.fillRect(player.x+cellSize,0,1,height*cellSize)
-      g.fillRect(0,player.y,width*cellSize,1)
-      g.fillRect(0,player.y+cellSize,width*cellSize,1)
-      */
     }
 
   }
@@ -99,11 +103,12 @@ object View extends SimpleSwingApplication {
   val pointCalculator = new Label("")
   val labelFont = new Font("Arial", 0, 36)
   pointCalculator.font = labelFont
-  //pointCalculator.horizontalAlignment = Alignment.Center
 
+  //Label where the lives are displayed
   val lifeCalculator = new Label("")
   lifeCalculator.font = labelFont
 
+  //Buttons
   val buttonSize = new Dimension(world.width * world.cellSize / 4 - 5, 50)
   val buttonFont = new Font("Arial", 0, 20)
 
@@ -144,7 +149,10 @@ object View extends SimpleSwingApplication {
     listenTo(this)
     reactions += {
       case clickEvent: ButtonClicked =>
-        GameWorld.gameState = "StartScreen"
+        GameWorld.gameState = "PauseScreen"
+        world.player.pauseMove()
+        world.ghostRandom.foreach(_.pauseMove())
+        
         canvas.requestFocus()
     }
 
@@ -153,15 +161,14 @@ object View extends SimpleSwingApplication {
     maximumSize = buttonSize
     font = buttonFont
   }
-  val optionButton = new Button("Option") {
+  val leaderBoardButton = new Button("LeaderBoard") {
 
     listenTo(this)
     reactions += {
       case clickEvent: ButtonClicked =>
+        showLeaderBoard
+        
         canvas.requestFocus()
-      // TODO: This is missing!
-        
-        
     }
 
     preferredSize = buttonSize
@@ -169,21 +176,25 @@ object View extends SimpleSwingApplication {
     maximumSize = buttonSize
     font = buttonFont
   }
-
-  val horizontalPanelLabels = new BoxPanel(Orientation.Vertical)
+  
+  //Panel for labels
+  val horizontalPanelLabels = new BoxPanel(Orientation.Horizontal)
   horizontalPanelLabels.contents += lifeCalculator
   horizontalPanelLabels.contents += pointCalculator
 
+  
+  //Panel for buttons
   val horizontalPanelButtons = new BoxPanel(Orientation.Vertical) {
     contents += newGameButton
     contents += quitButton
     contents += helpButton
-    contents += optionButton
+    contents += leaderBoardButton
   }
 
+  //Panel for all the elements
   val verticalPanel = new BorderPanel {
-    layout += canvas -> BorderPanel.Position.West
-    layout += horizontalPanelLabels -> BorderPanel.Position.Center
+    layout += canvas -> BorderPanel.Position.Center
+    layout += horizontalPanelLabels -> BorderPanel.Position.South
     layout += horizontalPanelButtons -> BorderPanel.Position.East
   }
 
@@ -193,15 +204,23 @@ object View extends SimpleSwingApplication {
 
   def top = new MainFrame {
     title = "Pac-Man Rip Off"
-    preferredSize = new Dimension(screenWidth+500, screenHeight + 50)
-
+    val windowSize = new Dimension(screenWidth+200, screenHeight + 100)
+    preferredSize = windowSize
+    maximumSize  = windowSize
+    minimumSize = windowSize
     contents = verticalPanel
 
     canvas.requestFocus()
 
     //Creates a timer which will run with the framerate
     val timer = new Timer(framerate, Swing.ActionListener { e =>
-
+      
+      //Player animation changes image ever so often
+      if (animatorCounter == animatorCounterCap) {
+        animatorCounterLooper // Loops the two values which chooses which one of the pictures to show
+        animatorCounter = 0
+      } else animatorCounter += 1
+      
 
       //If the game is going on
       if (GameWorld.gameState == "Game") {
@@ -214,17 +233,19 @@ object View extends SimpleSwingApplication {
           world.moveGhost(world.ghostRandom(i),world.ghostHomes(i))
         }
         
-        pointCalculator.text = "Points gotten: " + GameWorld.totalPoints.toString()
+        //Displays current points and lives
+        pointCalculator.text = "Points: " + GameWorld.totalPoints.toString()
         lifeCalculator.text = "Lives left: " + world.lives + "      "
         
-      if (world.powerPelletActive == true) {
-        if (world.pelletDuration > 0) {
-          world.pelletDuration -= 1
-        } else {
-          world.powerPelletActive = false
-          if (Sound.pPillSound.isRunning()) Sound.pPillSound.stop()
+        
+        if (world.powerPelletActive == true) {
+          if (world.pelletDuration > 0) {
+            world.pelletDuration -= 1
+          } else {
+            world.powerPelletActive = false
+            if (Sound.pPillSound.isRunning()) Sound.pPillSound.stop()
+          }
         }
-      }
         
         
         
@@ -261,11 +282,7 @@ object View extends SimpleSwingApplication {
           returnToStartScreen
       }
 
-
-      
       repaint()
-      
-      
       
     })
 
@@ -276,10 +293,6 @@ object View extends SimpleSwingApplication {
 
     reactions += {
 
-      //      case KeyPressed(_, c,_,_) => {
-      //        world.checkDirectionChange(c.toString())
-      //
-      //      }
       case e: KeyPressed =>
         e.key match {
           case Key.Up =>
@@ -290,29 +303,60 @@ object View extends SimpleSwingApplication {
             world.checkDirectionChange("Left")
           case Key.Right =>
             world.checkDirectionChange("Right")
+          case Key.P =>
+            GameWorld.gameState = "PauseScreen"
+            world.player.pauseMove()
+            world.ghostRandom.foreach(_.pauseMove())
+          case Key.R =>
+            GameWorld.gameState = "Game"
+            world.player.resumeMove()
+            world.ghostRandom.foreach(_.resumeMove())
           case _ =>
 
         }
     }
   }
   
+  
+  //Saves the given name and score to leaderboard
   def saveToLeaderBoard = {
     
-    val nimi = Dialog.showInput(canvas, "Concratulations!\nYou made it to the Leaderboard! \n Please give your name below.","",icon=null, initial="").get
+    val nimi = Dialog.showInput(canvas, "Concratulations!\nYou made it to the Leaderboard!\n" +
+      "Please give your name below.","",icon=null, initial="").get
     val tulos = nimi+":"+ GameWorld.totalPoints
     LeaderBoard.addScore(tulos)
     LeaderBoard.saveScores()
 
   }
   
+  //Shows leaderboard in a dialog
   def showLeaderBoard = {
     val leaderBoard = LeaderBoard.showLeaderBoard()
-    Dialog.showMessage(canvas, leaderBoard.mkString("\n")," Parhaista Parhaimmat:")
+    Dialog.showMessage(canvas, leaderBoard.mkString("\n"),"Best of the Best:")
   }
   
+  //Returns to startscreen and sets default values to the labels
   def returnToStartScreen = {
     GameWorld.gameState = "StartScreen"
     pointCalculator.text = ""
     lifeCalculator.text = ""
   }
+  
+  
+  //Loops through animator looper variables
+  def animatorCounterLooper = {
+    if (playerAnimator1 == 0 && playerAnimator2 == 0) {
+      playerAnimator1 = 1
+    } else if (playerAnimator1 == 1 && playerAnimator2 == 0) {
+      playerAnimator1 = 0
+      playerAnimator2 = 1
+    } else if (playerAnimator1 == 0 && playerAnimator2 == 1) {
+      playerAnimator1 = 1
+    } else {
+      playerAnimator1 = 0
+      playerAnimator2 = 0
+    }
+    
+  }
+  
 }

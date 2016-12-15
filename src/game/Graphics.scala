@@ -8,6 +8,11 @@ import javax.imageio.ImageIO
 import java.io.File
 import java.awt.image.BufferedImage
 
+
+/*
+ * An object that includes all the graphics in the game
+ */
+
 object Graphics {
   val blinkyUp = ImageIO.read(new File("pictures/blinky_up.png")) // load graphics
   val blinkyRight = ImageIO.read(new File("pictures/blinky_right.png"))
@@ -25,10 +30,10 @@ object Graphics {
   val pinkyRight = ImageIO.read(new File("pictures/pinky_right.png"))
   val pinkyDown = ImageIO.read(new File("pictures/pinky_down.png"))
   val pinkyLeft = ImageIO.read(new File("pictures/pinky_left.png"))
-  val pacmanUp = ImageIO.read(new File("pictures/pacman_up.png"))
-  val pacmanRight = ImageIO.read(new File("pictures/pacman_right.png"))
-  val pacmanDown = ImageIO.read(new File("pictures/pacman_down.png"))
-  val pacmanLeft = ImageIO.read(new File("pictures/pacman_left.png"))
+  val pacmanUp = ImageIO.read(new File("pictures/pacman_up_4.png"))
+  val pacmanRight = ImageIO.read(new File("pictures/pacman_right_4.png"))
+  val pacmanDown = ImageIO.read(new File("pictures/pacman_down_4.png"))
+  val pacmanLeft = ImageIO.read(new File("pictures/pacman_left_4.png"))
   val scaredUp = ImageIO.read(new File("pictures/scared_up.png"))
   val scaredRight = ImageIO.read(new File("pictures/scared_right.png"))
   val scaredDown = ImageIO.read(new File("pictures/scared_down.png"))

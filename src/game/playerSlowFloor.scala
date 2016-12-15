@@ -1,5 +1,7 @@
 package game
-
+/*
+ * A class that represents a spot type where player is slowed when he/she walk over it
+ */
 class PlayerSlowFloor extends Spot {
   
   var color = "RED"
@@ -10,10 +12,12 @@ class PlayerSlowFloor extends Spot {
   
   var hasPlayer = false
   
-  override def playerSpeed(player:Player) = {
-    player.changeSpeed(5)
-  }
   val image = Graphics.playerSlowFloor
+  
+  override def playerSpeed(player:Player) = {
+    player.changeSpeed(3)
     
- 
+  
+  }
+    
 }

@@ -12,6 +12,8 @@ abstract class Character(var x:Int, var y:Int) {
 
   var counter = 1 // counter that counts when to move character
   
+  
+  // Moves character to the given location
   def move(newX: Int, newY: Int) = {
     
     this.x = newX
@@ -19,8 +21,8 @@ abstract class Character(var x:Int, var y:Int) {
   }
   
   var speed = 1
-  private var baseSpeed = 1
-  private var savedSpeed = 1
+  private var _baseSpeed = 1
+  private var _savedSpeed = 1
   
   var currentDirection:Vector[Int]
   
@@ -30,21 +32,28 @@ abstract class Character(var x:Int, var y:Int) {
       "Up" ->      Vector( 0,-1), 
       "Right" ->   Vector( 1, 0))  
   
+      
+  //Sets character speed to 0
   def pauseMove() = {
-    savedSpeed = speed
-    speed = 0
+    _savedSpeed = speed
+    this.speed = 0
   }
   
+  //Sets character speed to the previous speed before pausing
   def resumeMove() = {
-    speed = savedSpeed
+    this.speed = _savedSpeed
   }
   
+  
+  //Sets character speed to the base speed
   def setSpeedToBase() = {
-    speed = baseSpeed
+    this.speed = _baseSpeed
   }
   
+  
+  //Sets character speed to speed given as variable
   def changeSpeed(newSpeed:Int) = {
-    speed = newSpeed
+    this.speed = newSpeed
   }
       
   /*Determines can player move to the direction given

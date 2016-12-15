@@ -3,6 +3,11 @@ package game
 import javax.sound.sampled._
 import java.io.File
 
+
+/*
+ * An object that takes care of playing sounds in the game
+ */
+
 object Sound {
   
   

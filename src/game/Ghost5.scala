@@ -5,6 +5,17 @@ import scala.math._
 import java.awt.Color
 import com.sun.javafx.geom.transform.BaseTransform.Degree
 
+
+/*
+ * This Class is a general type ghost which can behave little bit different depending on
+ * the constructor parameters given
+ * @Param x = initial x-coordinate of the ghost
+ * @Param y = initial y-coordinate of the ghost
+ * @Param gridMap = GameField
+ * @Param cellSize = size of one cell in the gameField
+ * @Param tileForward = How many tiles infront of the target character is the ghost aiming towards
+ * @Param random2On = are random moves on or not
+ */
 class Ghost5(x:Int, y:Int, gridMap: Array[Array[Spot]],cellSize: Int, val tilesForward:Int,
     val random2On:Boolean,val name:String) extends Ghost(x, y,gridMap,cellSize) {
   
@@ -51,7 +62,6 @@ class Ghost5(x:Int, y:Int, gridMap: Array[Array[Spot]],cellSize: Int, val tilesF
         //Goes through all the directions and chooses the one which angle to
         // the another character direction is smallest
         
-        
         //Vector normalization
         def normalize(a:Vector[Int]):Vector[Double] = {
          val lenght:Double = sqrt(pow(a(0),2)+pow(a(1),2))
@@ -71,6 +81,4 @@ class Ghost5(x:Int, y:Int, gridMap: Array[Array[Spot]],cellSize: Int, val tilesF
     }
   }
   
-    private val pColor = Color.WHITE
-    def color = pColor
 }
