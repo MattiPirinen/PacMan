@@ -27,27 +27,23 @@ class GameWorld(val name: String, currentLevel:Int) {
         y.addItem(new PowerPelletItem)
         y.itemType = "powerPellet"
       } else {
-        y.addItem(new PointItem)
+        y.addItem(new pointItem2)
         y.itemType = "pointItem"
         this.pointsInMap += 1
       }
       
     }
   }
-  
-  
-  
-  
 
   //Size for game cells
   val cellSize = 25
   
   
   //creates random ghosts
-  val ghostRandom: Vector[Ghost] = Vector(new Ghost1(15 * this.cellSize, 14 * this.cellSize, worldGrid, cellSize),
-                                      new Ghost1(15 * this.cellSize, 14 * this.cellSize,worldGrid,cellSize),
-                                      new Ghost1(15 * this.cellSize, 14 * this.cellSize,worldGrid,cellSize),
-                                      new Ghost2(15 * this.cellSize, 14 * this.cellSize,worldGrid,cellSize))
+  val ghostRandom: Vector[Ghost5] = Vector(new Ghost5(14 * this.cellSize, 14 * this.cellSize, worldGrid, cellSize, 0, false, "Blinky"),
+                                      new Ghost5(14 * this.cellSize, 14 * this.cellSize,worldGrid,cellSize,3,false,"Clyde"),
+                                      new Ghost5(14 * this.cellSize, 14 * this.cellSize,worldGrid,cellSize,-3,false,"Inky"),
+                                      new Ghost5(14 * this.cellSize, 14 * this.cellSize,worldGrid,cellSize,0,true,"Pinky"))
                                       
   //Speed for ghosts
   this.ghostRandom.foreach(_.speed = 3)
@@ -166,7 +162,10 @@ class GameWorld(val name: String, currentLevel:Int) {
 
     
     if (ghost.counter == ghost.speed) {
-      if (ghost.findDirections.size > 0) ghost.chooseDirection(ghost.x,ghost.y,player)
+      val availableDirections = ghost.findDirections
+      if (availableDirections.size > 1 || availableDirections.size != 0 && 
+          availableDirections(0) != ghost.currentDirection) 
+        ghost.chooseDirection(ghost.x,ghost.y,player)
       moveCharacter(ghost,ghost.currentDirection)
       if (worldGrid((ghost.x + cellSize/2) /cellSize)((ghost.y + cellSize/2) / cellSize).hasPlayer) {
         if (this.powerPelletActive == true){

@@ -8,7 +8,7 @@ abstract class Ghost(x:Int, y:Int, val gridMap: Array[Array[Spot]], val cellSize
   
 
   
-  var name = "Ghost"
+
   
   val vectorDirections = directions.toVector.map(_._2)
   var currentDirection = Vector(0,0)
