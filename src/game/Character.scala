@@ -18,9 +18,9 @@ abstract class Character(var x:Int, var y:Int) {
     this.y = newY
   }
   
-  var speed = 2
-  private var baseSpeed = 2
-  private var savedSpeed = 2
+  var speed = 1
+  private var baseSpeed = 1
+  private var savedSpeed = 1
   
   var currentDirection:Vector[Int]
   
@@ -41,6 +41,10 @@ abstract class Character(var x:Int, var y:Int) {
   
   def setSpeedToBase() = {
     speed = baseSpeed
+  }
+  
+  def changeSpeed(newSpeed:Int) = {
+    speed = newSpeed
   }
       
   /*Determines can player move to the direction given

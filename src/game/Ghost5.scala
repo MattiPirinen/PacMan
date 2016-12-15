@@ -9,7 +9,7 @@ class Ghost5(x:Int, y:Int, gridMap: Array[Array[Spot]],cellSize: Int, val tilesF
     val random2On:Boolean,val name:String) extends Ghost(x, y,gridMap,cellSize) {
   
 
-  this.speed = 3
+  this.speed = 1
 
   val r = scala.util.Random
   var randomCounter = 0 // counter that counts turns until random turn is turned off

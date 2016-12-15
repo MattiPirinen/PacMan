@@ -9,8 +9,8 @@ import java.io.File
 
 object View extends SimpleSwingApplication {
 
-  var currentLevel = 1
-  var world = new GameWorld("Peli1", currentLevel)
+
+  var world = new GameWorld("Peli1", GameWorld.currentLevel)
   GameWorld.gameState = "StartScreen"
 
   var showHelpMessage = false
@@ -40,6 +40,10 @@ object View extends SimpleSwingApplication {
                 }
                 case "CYAN" => { // If a floor is there, change color to cyan and paint a cyan tile representing floor
                   g.setColor(Color.CYAN)
+                  g.fillRect(i * cellSize, k * cellSize, cellSize, cellSize)
+                }
+                case "RED" => {
+                  g.setColor(Color.RED)
                   g.fillRect(i * cellSize, k * cellSize, cellSize, cellSize)
                 }
               }
@@ -121,7 +125,7 @@ object View extends SimpleSwingApplication {
     listenTo(this)
     reactions += {
       case clickEvent: ButtonClicked =>
-        world = new GameWorld("Peli1", currentLevel)
+        world = new GameWorld("Peli1", GameWorld.currentLevel)
         GameWorld.gameState = "Game"
         canvas.requestFocus()
 
@@ -175,11 +179,11 @@ object View extends SimpleSwingApplication {
     font = buttonFont
   }
 
-  val horizontalPanelLabels = new BoxPanel(Orientation.Horizontal)
+  val horizontalPanelLabels = new BoxPanel(Orientation.Vertical)
   horizontalPanelLabels.contents += lifeCalculator
   horizontalPanelLabels.contents += pointCalculator
 
-  val horizontalPanelButtons = new BoxPanel(Orientation.Horizontal) {
+  val horizontalPanelButtons = new BoxPanel(Orientation.Vertical) {
     contents += newGameButton
     contents += quitButton
     contents += helpButton
@@ -187,9 +191,9 @@ object View extends SimpleSwingApplication {
   }
 
   val verticalPanel = new BorderPanel {
-    layout += canvas -> BorderPanel.Position.North
+    layout += canvas -> BorderPanel.Position.West
     layout += horizontalPanelLabels -> BorderPanel.Position.Center
-    layout += horizontalPanelButtons -> BorderPanel.Position.South
+    layout += horizontalPanelButtons -> BorderPanel.Position.East
   }
 
   // ################################################################################################
@@ -198,7 +202,7 @@ object View extends SimpleSwingApplication {
 
   def top = new MainFrame {
     title = "Pac-Man Rip Off"
-    preferredSize = new Dimension(screenWidth, screenHeight + 150)
+    preferredSize = new Dimension(screenWidth+500, screenHeight + 50)
 
     contents = verticalPanel
 
@@ -215,11 +219,12 @@ object View extends SimpleSwingApplication {
         pointCalculator.text = "Points left: " + world.pointsInMap.toString()
         lifeCalculator.text = "Lives left: " + world.lives + "      "
       } else if (GameWorld.gameState == "Victory") {
-        if (currentLevel == 3) {
+        if (GameWorld.currentLevel == 3) {
           pointCalculator.text = "YOU WON! CONGRATULATIONS!"
         } else {
-          currentLevel += 1
-          world = new GameWorld("Peli1", currentLevel)
+          GameWorld.currentLevel += 1
+          world = new GameWorld("Peli1", GameWorld.currentLevel)
+          GameWorld.gameState = "Game"
         }
       } else if (GameWorld.gameState == "Death") {
         var stopped = 0

@@ -21,6 +21,9 @@ abstract class Spot {
     valiItemi
   }
   
+  def playerSpeed(player:Player):Unit = player.setSpeedToBase()
+  
+  def ghostSpeed(ghost:Ghost):Unit = ghost.setSpeedToBase()
   
 }
 

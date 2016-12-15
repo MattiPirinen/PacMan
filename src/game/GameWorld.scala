@@ -4,6 +4,7 @@ import javax.sound.sampled._
 
 object GameWorld {
   var gameState = "Game"
+  var currentLevel = 1
 }
 
 class GameWorld(val name: String, currentLevel:Int) {
@@ -34,19 +35,21 @@ class GameWorld(val name: String, currentLevel:Int) {
       
     }
   }
+  
+
 
   //Size for game cells
   val cellSize = 25
   
   
   //creates random ghosts
-  val ghostRandom: Vector[Ghost5] = Vector(new Ghost5(14 * this.cellSize, 14 * this.cellSize, worldGrid, cellSize, 0, false, "Blinky"),
+  val ghostRandom: Vector[Ghost] = Vector(new Ghost5(14 * this.cellSize, 14 * this.cellSize, worldGrid, cellSize, 0, false, "Blinky"),
                                       new Ghost5(14 * this.cellSize, 14 * this.cellSize,worldGrid,cellSize,3,false,"Clyde"),
                                       new Ghost5(14 * this.cellSize, 14 * this.cellSize,worldGrid,cellSize,-3,false,"Inky"),
                                       new Ghost5(14 * this.cellSize, 14 * this.cellSize,worldGrid,cellSize,0,true,"Pinky"))
                                       
   //Speed for ghosts
-  this.ghostRandom.foreach(_.speed = 3)
+  this.ghostRandom.foreach(_.speed = 1)
   
   // Creates player
   val player = new Player(cellSize, cellSize, worldGrid) // Game player
@@ -120,7 +123,7 @@ class GameWorld(val name: String, currentLevel:Int) {
       //Indicates to the spot where player is that the spot has player
       
       worldGrid((player.x + cellSize/2) /cellSize)((player.y + cellSize/2) / cellSize).hasPlayer = true
-
+      worldGrid((player.x + cellSize/2) /cellSize)((player.y + cellSize/2) / cellSize).playerSpeed(player)
     } else player.counter += 1
     
   }

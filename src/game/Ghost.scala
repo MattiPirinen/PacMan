@@ -6,7 +6,7 @@ import java.awt.Color
 
 abstract class Ghost(x:Int, y:Int, val gridMap: Array[Array[Spot]], val cellSize: Int) extends Character(x,y) {
   
-
+  val name:String
   
 
   
