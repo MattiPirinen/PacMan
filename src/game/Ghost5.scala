@@ -22,13 +22,10 @@ class Ghost5(x:Int, y:Int, gridMap: Array[Array[Spot]],cellSize: Int, val tilesF
   
   def chooseDirection(firstX:Int, firstY:Int,another:Character) = {
     val availableDirections = findDirections
-    //println(randomCounter)
     //Random moves at the beginning of the level and after that uses the artificial intelligence
     //of the ghost
     if (randomCounter < randomMoves) {
-      //println(this.name+ " " +randomCounter)
       this.currentDirection = availableDirections(r.nextInt(availableDirections.size))
-      println(this.name + this.currentDirection)
       randomCounter += 1
     } else {
       
@@ -45,8 +42,8 @@ class Ghost5(x:Int, y:Int, gridMap: Array[Array[Spot]],cellSize: Int, val tilesF
         //Takes the current direction of another character
         val anotherDirection = another.currentDirection
         
-        val targetX = another.x + anotherDirection(0)*cellSize*this.tilesForward
-        val targetY = another.y + anotherDirection(1)*cellSize*5*this.tilesForward
+        val targetX = another.x + anotherDirection(0)*this.cellSize*this.tilesForward
+        val targetY = another.y + anotherDirection(1)*this.cellSize*this.tilesForward
         
         //Checks the direction towards another character
         val direction1 = Vector(targetX - firstX, targetY - firstY)

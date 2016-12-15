@@ -5,6 +5,27 @@ import javax.sound.sampled._
 object GameWorld {
   var gameState = "Game"
   var currentLevel = 1
+  var totalPoints = 0 // Total points gotten in the game
+  var pointLossCounter = 0
+  val pointLossTresshould = 100
+  
+  def losePoints = {
+    if(pointLossCounter == pointLossTresshould) {
+      totalPoints -= 1
+      pointLossCounter = 0
+    } else {
+      pointLossCounter += 1
+    }
+  }
+  
+  def madeToLeaderboard:Boolean = {
+    val leaderBoard = LeaderBoard.showLeaderBoard().map(_.split(":")(1).toInt)
+    if (leaderBoard.max > totalPoints) false else true
+    
+  }
+  
+  
+  
 }
 
 class GameWorld(val name: String, currentLevel:Int) {
@@ -14,6 +35,14 @@ class GameWorld(val name: String, currentLevel:Int) {
   val width = 28 // "cells" in width direction
   val height = 31 // "cells" in height direction
   var pointsInMap =  0//points in the map
+  val pointsFromGhost = 5 //How many points player gets when he eats a ghost
+  val pointsFromItem = 1 // How many points player gets when he eats a pointItem
+  
+  //Sets the initial values for powerPellet item effects
+  var powerPelletActive = false
+  var pelletDuration = 0
+  
+  
   
   // #################################### Game world creation ##############################################
   val worldGrid: Array[Array[Spot]] = gameField.gridMap(currentLevel) //Map for the game
@@ -36,11 +65,15 @@ class GameWorld(val name: String, currentLevel:Int) {
     }
   }
   
-
-
   //Size for game cells
   val cellSize = 25
   
+  
+  //Creates ghost homes
+  val ghostHomes: Vector[Character] = Vector(new GhostHome(1*this.cellSize,1*this.cellSize),
+                                             new GhostHome(28*this.cellSize,1*this.cellSize), 
+                                             new GhostHome(1*this.cellSize,30*this.cellSize),
+                                             new GhostHome(30*this.cellSize,28*this.cellSize))
   
   //creates random ghosts
   val ghostRandom: Vector[Ghost] = Vector(new Ghost5(14 * this.cellSize, 14 * this.cellSize, worldGrid, cellSize, 0, false, "Blinky"),
@@ -58,9 +91,7 @@ class GameWorld(val name: String, currentLevel:Int) {
   var points = 0
   
   
-  //Sets the initial values for powerPellet item effects
-  var powerPelletActive = false
-  var pelletDuration = 0
+
   
 
   //Has the game been won?
@@ -109,6 +140,7 @@ class GameWorld(val name: String, currentLevel:Int) {
           case "pointItem" => {
             points += 1
             this.pointsInMap -= 1
+            GameWorld.totalPoints += this.pointsFromItem
           }
           case "powerPellet" => {
             this.activatePowerPellet()
@@ -161,23 +193,32 @@ class GameWorld(val name: String, currentLevel:Int) {
     
   }
   
-  def moveGhost(ghost :Ghost) = {
+  def moveGhost(ghost :Ghost,home:Character) = {
 
-    
+    //Moves the ghost
     if (ghost.counter == ghost.speed) {
       val availableDirections = ghost.findDirections
       if (availableDirections.size > 1 || availableDirections.size != 0 && 
           availableDirections(0) != ghost.currentDirection) 
+        if (this.powerPelletActive) {
+          ghost.chooseDirection(ghost.x,ghost.y,home)
+        } else {
         ghost.chooseDirection(ghost.x,ghost.y,player)
+        }
       moveCharacter(ghost,ghost.currentDirection)
+      
+      //If there is a player where the ghost moved acts accordingly
+      
+      //If powerPellet is activated ghost goes back to base
       if (worldGrid((ghost.x + cellSize/2) /cellSize)((ghost.y + cellSize/2) / cellSize).hasPlayer) {
         if (this.powerPelletActive == true){
           ghost.x=14 * this.cellSize
           ghost.y=14 * this.cellSize
           ghost.counter = -1000
           Sound.playPowerupSound()
-
+          GameWorld.totalPoints += this.pointsFromGhost
           }
+        //If not player dies
         else {
           Sound.playDeathSound()
           if (lives == 1) {
@@ -197,6 +238,9 @@ class GameWorld(val name: String, currentLevel:Int) {
       else ghost.counter = 1
     } else ghost.counter += 1
     
+    
+    //Sets the speed of the ghost
+    worldGrid((ghost.x + cellSize/2) /cellSize)((ghost.y + cellSize/2) / cellSize).ghostSpeed(ghost)
   }
   
   def activatePowerPellet(){

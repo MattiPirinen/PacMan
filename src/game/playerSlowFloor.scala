@@ -1,6 +1,6 @@
 package game
 
-class playerSlowFloor extends Spot {
+class PlayerSlowFloor extends Spot {
   
   var color = "RED"
   
@@ -13,4 +13,7 @@ class playerSlowFloor extends Spot {
   override def playerSpeed(player:Player) = {
     player.changeSpeed(5)
   }
+  val image = Graphics.playerSlowFloor
+    
+ 
 }

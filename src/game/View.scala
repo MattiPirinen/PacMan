@@ -33,20 +33,7 @@ object View extends SimpleSwingApplication {
         case "Game" => {
           for (i <- 0 until world.width) {
             for (k <- 0 until world.height) { // Loop through the world grid
-              world.worldGrid(i)(k).color match { // Match what is found in every position
-                case "BLACK" => { // If a wall is there, change color to black and paint a black tile representing a wall
-                  g.setColor(Color.BLACK)
-                  g.fillRect(i * cellSize, k * cellSize, cellSize, cellSize)
-                }
-                case "CYAN" => { // If a floor is there, change color to cyan and paint a cyan tile representing floor
-                  g.setColor(Color.CYAN)
-                  g.fillRect(i * cellSize, k * cellSize, cellSize, cellSize)
-                }
-                case "RED" => {
-                  g.setColor(Color.RED)
-                  g.fillRect(i * cellSize, k * cellSize, cellSize, cellSize)
-                }
-              }
+              g.drawImage(world.worldGrid(i)(k).image, i*cellSize, k*cellSize, null)  //Draw images that spot defines
               if (world.worldGrid(i)(k).hasItem) {
                 g.setColor(Color.BLUE)
                 if (world.worldGrid(i)(k).itemType == "pointItem") {
@@ -114,7 +101,7 @@ object View extends SimpleSwingApplication {
   pointCalculator.font = labelFont
   //pointCalculator.horizontalAlignment = Alignment.Center
 
-  val lifeCalculator = new Label("Lives left: " + world.lives + "      ")
+  val lifeCalculator = new Label("")
   lifeCalculator.font = labelFont
 
   val buttonSize = new Dimension(world.width * world.cellSize / 4 - 5, 50)
@@ -125,6 +112,8 @@ object View extends SimpleSwingApplication {
     listenTo(this)
     reactions += {
       case clickEvent: ButtonClicked =>
+        GameWorld.currentLevel = 1
+        GameWorld.totalPoints = 0
         world = new GameWorld("Peli1", GameWorld.currentLevel)
         GameWorld.gameState = "Game"
         canvas.requestFocus()
@@ -171,6 +160,8 @@ object View extends SimpleSwingApplication {
       case clickEvent: ButtonClicked =>
         canvas.requestFocus()
       // TODO: This is missing!
+        
+        
     }
 
     preferredSize = buttonSize
@@ -210,31 +201,22 @@ object View extends SimpleSwingApplication {
 
     //Creates a timer which will run with the framerate
     val timer = new Timer(framerate, Swing.ActionListener { e =>
-      world.movePlayer
-      for (ghost <- world.ghostRandom) {
-        world.moveGhost(ghost)
-      }
-      repaint()
-      if (GameWorld.gameState == "Game") {
-        pointCalculator.text = "Points left: " + world.pointsInMap.toString()
-        lifeCalculator.text = "Lives left: " + world.lives + "      "
-      } else if (GameWorld.gameState == "Victory") {
-        if (GameWorld.currentLevel == 3) {
-          pointCalculator.text = "YOU WON! CONGRATULATIONS!"
-        } else {
-          GameWorld.currentLevel += 1
-          world = new GameWorld("Peli1", GameWorld.currentLevel)
-          GameWorld.gameState = "Game"
-        }
-      } else if (GameWorld.gameState == "Death") {
-        var stopped = 0
-        if (stopped == 0) {
-          world.ghostRandom.foreach(i => i.pauseMove())
-          pointCalculator.text = "GAME OVER"
-          stopped = 1
-        }
-      }
 
+
+      //If the game is going on
+      if (GameWorld.gameState == "Game") {
+        
+        //Loses points when time goes on
+        GameWorld.losePoints
+        //Moves the characters
+        world.movePlayer
+        for (i <- world.ghostRandom.indices) {
+          world.moveGhost(world.ghostRandom(i),world.ghostHomes(i))
+        }
+        
+        pointCalculator.text = "Points gotten: " + GameWorld.totalPoints.toString()
+        lifeCalculator.text = "Lives left: " + world.lives + "      "
+        
       if (world.powerPelletActive == true) {
         if (world.pelletDuration > 0) {
           world.pelletDuration -= 1
@@ -243,6 +225,48 @@ object View extends SimpleSwingApplication {
           if (Sound.pPillSound.isRunning()) Sound.pPillSound.stop()
         }
       }
+        
+        
+        
+      } 
+      
+      //If player has won
+      else if (GameWorld.gameState == "Victory") {
+        //If player is at the last level ends the game
+        if (GameWorld.currentLevel == 3) {
+          pointCalculator.text = "YOU WON! CONGRATULATIONS!"
+          if (GameWorld.madeToLeaderboard) {
+            saveToLeaderBoard
+          }
+            showLeaderBoard
+            returnToStartScreen
+        }
+        //Else moves player to the next game
+        else {
+          GameWorld.currentLevel += 1
+          world = new GameWorld("Peli1", GameWorld.currentLevel)
+          GameWorld.gameState = "Game"
+          world.player.counter = -200
+          world.ghostRandom.foreach(_.counter = -200)
+        }
+      } 
+      
+      //If player has died
+      else if (GameWorld.gameState == "Death") {
+        pointCalculator.text = "GAME OVER"
+        if (GameWorld.madeToLeaderboard) {
+          saveToLeaderBoard
+        }
+          showLeaderBoard
+          returnToStartScreen
+      }
+
+
+      
+      repaint()
+      
+      
+      
     })
 
     timer.start()
@@ -270,5 +294,25 @@ object View extends SimpleSwingApplication {
 
         }
     }
+  }
+  
+  def saveToLeaderBoard = {
+    
+    val nimi = Dialog.showInput(canvas, "Concratulations!\nYou made it to the Leaderboard! \n Please give your name below.","",icon=null, initial="").get
+    val tulos = nimi+":"+ GameWorld.totalPoints
+    LeaderBoard.addScore(tulos)
+    LeaderBoard.saveScores()
+
+  }
+  
+  def showLeaderBoard = {
+    val leaderBoard = LeaderBoard.showLeaderBoard()
+    Dialog.showMessage(canvas, leaderBoard.mkString("\n")," Parhaista Parhaimmat:")
+  }
+  
+  def returnToStartScreen = {
+    GameWorld.gameState = "StartScreen"
+    pointCalculator.text = ""
+    lifeCalculator.text = ""
   }
 }

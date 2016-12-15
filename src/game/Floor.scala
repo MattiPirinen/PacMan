@@ -9,4 +9,7 @@ class Floor extends Spot {
   var isUnPassable = false
   
   var hasPlayer = false
+  
+  val image = Graphics.floor
+  
 }
