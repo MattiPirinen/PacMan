@@ -8,7 +8,7 @@ package game
  * @param y 	y-direction in the game world
  */
 
-class Character(var x:Int, var y:Int) {
+abstract class Character(var x:Int, var y:Int) {
 
   var counter = 1 // counter that counts when to move character
   
@@ -21,7 +21,8 @@ class Character(var x:Int, var y:Int) {
   var speed = 2
   private var baseSpeed = 2
   private var savedSpeed = 2
-
+  
+  var currentDirection:Vector[Int]
   
   val directions: Map[String,Vector[Int]] = 
     Map("Down" ->  Vector( 0, 1),
