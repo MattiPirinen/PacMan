@@ -61,9 +61,9 @@ object View extends SimpleSwingApplication {
               }
             }
           }
-          g.setColor(Color.RED)      // Set color for the player to be drawn
-          g.fillOval(world.player.x, world.player.y, cellSize, cellSize) // Draw player to its location
-
+          //Draw player
+          g.drawImage(Graphics.pacman(world.player.currentDirection), world.player.x, world.player.y, null)
+          
           for (ghost <- world.ghostRandom) {
             g.setColor(ghost.color)
             g.fillOval(ghost.x, ghost.y, cellSize, cellSize)
@@ -261,15 +261,23 @@ object View extends SimpleSwingApplication {
 
     reactions += {
       
-      case KeyPressed(_, c,_,_) => {
-        world.checkDirectionChange(c.toString())
-
-      }
-    } 
-  }
-
-
-  
-
-  
+//      case KeyPressed(_, c,_,_) => {
+//        world.checkDirectionChange(c.toString())
+//
+//      }
+      case e:KeyPressed =>
+        e.key match {
+          case Key.Up =>
+            world.checkDirectionChange("Up")
+          case Key.Down =>
+            world.checkDirectionChange("Down")
+          case Key.Left =>
+            world.checkDirectionChange("Left")
+          case Key.Right =>
+            world.checkDirectionChange("Right")
+          case _ =>
+      
+        } 
+    }
+  }  
 }
