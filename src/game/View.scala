@@ -30,23 +30,11 @@ object View extends SimpleSwingApplication {
 
       GameWorld.gameState match {
 
+        
         case "Game" => {
           for (i <- 0 until world.width) {
             for (k <- 0 until world.height) { // Loop through the world grid
-              world.worldGrid(i)(k).color match { // Match what is found in every position
-                case "BLACK" => { // If a wall is there, change color to black and paint a black tile representing a wall
-                  g.setColor(Color.BLACK)
-                  g.fillRect(i * cellSize, k * cellSize, cellSize, cellSize)
-                }
-                case "CYAN" => { // If a floor is there, change color to cyan and paint a cyan tile representing floor
-                  g.setColor(Color.CYAN)
-                  g.fillRect(i * cellSize, k * cellSize, cellSize, cellSize)
-                }
-                case "RED" => {
-                  g.setColor(Color.RED)
-                  g.fillRect(i * cellSize, k * cellSize, cellSize, cellSize)
-                }
-              }
+              g.drawImage(world.worldGrid(i)(k).image, i*cellSize, k*cellSize, null)  //Draw images that spot defines
               if (world.worldGrid(i)(k).hasItem) {
                 g.setColor(Color.BLUE)
                 if (world.worldGrid(i)(k).itemType == "pointItem") {

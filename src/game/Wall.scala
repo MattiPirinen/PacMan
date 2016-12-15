@@ -9,4 +9,6 @@ class Wall extends Spot {
   var isUnPassable = true
   
   var hasPlayer = false
+  
+  val image = Graphics.fence
  }

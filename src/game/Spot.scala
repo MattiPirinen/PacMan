@@ -1,5 +1,7 @@
 package game
 
+import java.awt.image.BufferedImage
+
 abstract class Spot {
   
   private var itemi: Option[Item] = None
@@ -9,6 +11,7 @@ abstract class Spot {
   var isUnPassable: Boolean
   var color:String
   var itemType = ""
+  val image: BufferedImage
   
   def hasItem = itemi != None
   

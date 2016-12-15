@@ -112,7 +112,19 @@ object gameField {
       else new Floor)).transpose
   }
 
-
+//  def isGrass(number:Int)= {
+//    
+//    var Ar = gameFields(number)
+//    for (i <- Ar.indices)
+//      for (j <- i.indices)
+//        if (Ar(i)(j) == 1)    
+//          for (x <- -1 until 2)
+//            if (j + x >= 0 && j + x < 31)
+//              if ()
+//          
+//     
+//    false
+//  }
 
   
   

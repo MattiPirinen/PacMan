@@ -10,7 +10,11 @@ class playerSlowFloor extends Spot {
   
   var hasPlayer = false
   
+  val image = Graphics.playerSlowFloor
+  
   override def playerSpeed(player:Player) = {
     player.changeSpeed(5)
+    
+  
   }
 }
